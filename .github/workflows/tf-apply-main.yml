@@ -1,6 +1,5 @@
 name: 'Terraform Apply'
 
-
 on:
   workflow_dispatch:
     inputs:
@@ -35,13 +34,13 @@ jobs:
     - name: Set up Terraform
       uses: hashicorp/setup-terraform@v1
       with:
-        terraform_version: 1.5.6
+        terraform_version: 1.5.6 # Specify the desired version of Terraform
 
     - name: Set Account ID
       id: account
       run: |
         echo "::set-output name=ACCOUNT_ID::$(aws sts get-caller-identity --query Account --output text)"
-
+    
     - name: Check previous AWSGoat Deployment
       id: check 
       run: |
@@ -54,18 +53,19 @@ jobs:
       run: |
         echo "A Previous AWSGoat deployment exists, run the Terraform Destroy Action"
         exit 1
-
+      
     # Initialize a new or existing Terraform working directory 
     - name: Terraform Init
       run: | 
         cd modules/${{ github.event.inputs.module }}
         terraform init 
-        
+
     # Installs boto3
     - uses: actions/setup-python@v2
       with:
         python-version: 3
-    - name: install
+
+    - name: Install boto3
       run: |
         pip install boto3
     
